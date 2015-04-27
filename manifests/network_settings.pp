@@ -5,12 +5,12 @@ class bootstrap::network_settings {
   file_line { 'DHCLIENTARGS':
     path    => '/etc/sysconfig/network-scripts/ifcfg-eth0',
     line    => 'DHCLIENTARGS="-nw"',
-    matches => '^DHCLIENTARGS.*$',
+    matches => '^DHCLIENTARGS.*',
   }
   file_line { 'PERSISTENT_DHCLIENT':
     path    => '/etc/sysconfic/network-scripts/ifcfg-eth0',
     line    => 'PERSISTENT_DHCLIENT=yes',
-    matches => '^PERSISTENT_DHCLIENT.*$',
+    matches => '^PERSISTENT_DHCLIENT.*',
   }
 }
 
