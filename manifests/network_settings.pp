@@ -8,7 +8,7 @@ class bootstrap::network_settings {
     match   => '^DHCLIENTARGS.*',
   }
   file_line { 'PERSISTENT_DHCLIENT':
-    path    => '/etc/sysconfic/network-scripts/ifcfg-eth0',
+    path    => '/etc/sysconfig/network-scripts/ifcfg-eth0',
     line    => 'PERSISTENT_DHCLIENT=yes',
     match   => '^PERSISTENT_DHCLIENT.*',
   }
