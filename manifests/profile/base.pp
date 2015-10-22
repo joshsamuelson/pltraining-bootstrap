@@ -22,7 +22,7 @@ class bootstrap::profile::base {
   }
 
   # Add a few extra packages for convenience
-  package { [ 'patch', 'screen', 'telnet', 'tree' ] :
+  package { [ 'patch', 'screen', 'telnet', 'tree', 'gcc' ] :
     ensure  => present,
     require => Class['localrepo'],
   }
