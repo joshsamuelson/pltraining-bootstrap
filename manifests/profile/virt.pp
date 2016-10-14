@@ -1,12 +1,9 @@
 class bootstrap::profile::virt (
-  $admin_user = $bootstrap::admin_user
+  $admin_user = $bootstrap::params::admin_user
 ){
 
   $image_location   = '/var/lib/libvirt/images'
   $image_source     = '/usr/src/vms'
-  $libvirt_gateway  = '192.168.233.1'
-  $dhcp_range_start = '192.168.233.1'
-  $dhcp_range_end   = '192.168.233.254'
   $wifi_iface       = 'wlp3s0'
 
   # Set up libvirt and network
@@ -15,28 +12,14 @@ class bootstrap::profile::virt (
     require => Class['libvirt'],
   }
   class { 'libvirt':
-    defaultnetwork     => false,
+    defaultnetwork     => true,
     auth_unix_rw       => 'none',
-    qemu_user          => 'training',
+    qemu_user          => $admin_user,
     qemu_group         => 'libvirt',
     qemu_vnc_listen    => '0.0.0.0',
     listen_tcp         => true,
     unix_sock_group    => 'libvirt',
     unix_sock_rw_perms => '0770',
-  }
-  libvirt::network { 'classroom':
-    ensure       => 'enabled',
-    bridge       => 'virbr0',
-    forward_mode => 'nat',
-    domain_name  => 'puppetlabs.vm',
-    autostart    => true,
-    ip           => [{
-      address    => $libvirt_gateway,
-      dhcp       => {
-        start    => $dhcp_range_start,
-        end      => $dhcp_range_end,
-      }
-    }],
   }
   libvirt_pool { 'default':
     ensure    => present,
@@ -54,7 +37,7 @@ class bootstrap::profile::virt (
   # Use local dns first
   file { '/etc/resolv.conf.head':
     ensure  => file,
-    content => "nameserver ${libvirt_gateway}",
+    content => "nameserver 192.168.122.1",
   }
 
   file { '/etc/hostapd/hostapd.conf':
@@ -74,6 +57,13 @@ class bootstrap::profile::virt (
   package {['kvm','hostapd','iw']:
     ensure  => present,
     require => Class['epel'],
+  }
+
+  file { '/etc/systemd/system/multi-user.target.wants/hostapd.service':
+    ensure  => file,
+    source  => 'puppet:///modules/bootstrap/hostapd.service',
+    before  => Service['hostapd'],
+    require => Package['hostapd'],
   }
 
   service {'hostapd':
