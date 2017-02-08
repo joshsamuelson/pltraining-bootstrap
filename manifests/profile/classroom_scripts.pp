@@ -1,4 +1,4 @@
-class bootstrap::profile::scripts {
+class bootstrap::profile::classroom_scripts {
   # Populate the VM with our helper scripts.
   File {
     owner => 'root',
@@ -9,6 +9,6 @@ class bootstrap::profile::scripts {
     ensure  => directory,
     recurse => true,
     replace => false,
-    source  => 'puppet:///modules/bootstrap/scripts/general',
+    source  => 'puppet:///modules/bootstrap/scripts/classroom-only',
   }
 }
